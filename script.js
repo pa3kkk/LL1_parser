@@ -6,6 +6,7 @@ function loadFunction(){
 	document.getElementById("result").innerHTML = "";
 
 	word_a = [];
+	stack = ["#", "url"];
 
 	while(word.length > 0 ){
 		
@@ -40,7 +41,6 @@ function loadFunction(){
 	}
 
 	word_a.push("$");
-	stack.push("url");
 }
 
 
@@ -58,10 +58,13 @@ function debugFunction() {
 
 	console.log("Stack: " + s + " | Queue: " + q);
 	// correct word
-	if(s == "#" && q == "$"){
-		document.getElementById("result").innerHTML = "Correct word!";
-		stack.push("#");
-		word_a.push("$");
+	if(s == "#"){
+		if(q == "$"){
+			document.getElementById("result").innerHTML = "Correct word!";
+			stack.push("#");
+		} else{
+			document.getElementById("result").innerHTML = "Incorrect word!";	
+		}
 		return;
 	}
 
@@ -103,19 +106,22 @@ function checkFunction() {
 
 	// if any word is loaded
 	if(!word_a[0]){
-		document.getElementById("result").innerHTML = "Pleas, insert word.";
+		document.getElementById("result").innerHTML = "Pleas, load word.";
 		return;
 	}
 
 	while(true){
 		var s = stack.pop();
 		var q = word_a[0];
-		
+
 		// correct word
-		if(s == "#" && q == "$"){
-			document.getElementById("result").innerHTML = "Correct word!";
-			stack.push("#");
-			word_a.push("$");
+		if(s == "#"){
+			if(q == "$"){
+				document.getElementById("result").innerHTML = "Correct word!";
+				stack.push("#");
+			} else{
+				document.getElementById("result").innerHTML = "Incorrect word!";	
+			}
 			return;
 		}
 
