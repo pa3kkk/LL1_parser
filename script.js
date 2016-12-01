@@ -57,11 +57,51 @@ var array = {
 };
 
 
+function loadFunction(){
+	var word = document.getElementById("word").value;
+	document.getElementById("result").innerHTML = "";
+	
+	while(word.length > 0 ){
+		console.log(word);
+		
+		if(word.startsWith("http://")){
+			word = word.substring("http://".length);
+		} else if(word.startsWith("ftp://")){
+			word = word.substring("ftp://".length);
+		} else if(word.startsWith("telnet://")){
+			word = word.substring("telnet://".length);
+		} else if(word.startsWith(" mailto::")){
+			word = word.substring(" mailto::".length);
+		} else if(word[0].match(/[0-9]/)){
+			word = word.substring(1);
+			console.log("is a number");
+		} else if(word[0].match(/[a-z]/i)){
+			word = word.substring(1);
+			console.log("is a Letter");
+		} else if(word[0].match(/\?|\@|\:|\+|\.|\//)){
+			word = word.substring(1);
+			console.log("some special character");
+		} else{
+			document.getElementById("result").innerHTML = "Incorrect word!";
+			return;
+		}
+	}
+}
+
+function isLetter(str) {
+  return str.length === 1 && str.match(/[a-z]/i);
+}
+
+function isNumber(str) {
+  return str.length === 1 && str.match(/[0-9]/);
+}
+
+
 function myFunction() {
 	var s = stack.pop();
 	var q = word[0];
 
-console.log("Stack: " + s + " | Queue: " + q);
+	console.log("Stack: " + s + " | Queue: " + q);
 	// correct word
 	if(s == "#" && q == "$"){
 		document.getElementById("result").innerHTML = "Correct word!";
