@@ -1,135 +1,90 @@
-var stack = [];
-stack.push("#");
-stack.push("S");
-
-// var word = ["a", "b", "c", "$"];
-var word = ["a", "c", "a", "d", "$"];
-var array = {
-
-	"S": {	"a": "aB", 
-			"b": null,
-			"c": null,
-			"d": "daC",
-			"$": "ε" 
-		},
-	"A": {	"a": "aA", 
-			"b": null,
-			"c": "ε",
-			"d": null,
-			"$": "ε" 
-		},
-	"B": {	"a": "AcaC", 
-			"b": "bAc",
-			"c": "AcaC",
-			"d": null,
-			"$": null 
-		},
-	"C": {	"a": "aAcA", 
-			"b": null,
-			"c": null,
-			"d": "dA",
-			"$": null 
-		},
-	"a": {	"a": "POP", 
-			"b": null,
-			"c": null,
-			"d": null,
-			"$": null 
-		},	
-	"b": {	"a": null, 
-			"b": "POP",
-			"c": null,
-			"d": null,
-			"$": null 
-		},
-	"c": {	"a": null, 
-			"b": null,
-			"c": "POP",
-			"d": null,
-			"$": null 
-		},	
-	"d": {	"a": null, 
-			"b": null,
-			"c": null,
-			"d": "POP",
-			"$": null 
-		}
-};
-
+var stack = ["#"];
+var word_a = [];
 
 function loadFunction(){
 	var word = document.getElementById("word").value;
 	document.getElementById("result").innerHTML = "";
-	
+
+	word_a = [];
+
 	while(word.length > 0 ){
-		console.log(word);
 		
 		if(word.startsWith("http://")){
 			word = word.substring("http://".length);
+			word_a.push("http://");
 		} else if(word.startsWith("ftp://")){
 			word = word.substring("ftp://".length);
+			word_a.push("ftp://");
 		} else if(word.startsWith("telnet://")){
 			word = word.substring("telnet://".length);
-		} else if(word.startsWith(" mailto::")){
-			word = word.substring(" mailto::".length);
+			word_a.push("telnet://");
+		} else if(word.startsWith("mailto::")){
+			word = word.substring("mailto::".length);
+			word_a.push("mailto::");
 		} else if(word[0].match(/[0-9]/)){
 			word = word.substring(1);
-			console.log("is a number");
+			word_a.push("num");
 		} else if(word[0].match(/[a-z]/i)){
 			word = word.substring(1);
-			console.log("is a Letter");
+			word_a.push("lett");
 		} else if(word[0].match(/\?|\@|\:|\+|\.|\//)){
+			word_a.push(word[0]);
 			word = word.substring(1);
-			console.log("some special character");
 		} else{
+			word_a = [];
 			document.getElementById("result").innerHTML = "Incorrect word!";
 			return;
 		}
+
+		console.log(word_a[word_a.length -1]);
 	}
-}
 
-function isLetter(str) {
-  return str.length === 1 && str.match(/[a-z]/i);
-}
-
-function isNumber(str) {
-  return str.length === 1 && str.match(/[0-9]/);
+	word_a.push("$");
+	stack.push("url");
 }
 
 
-function myFunction() {
+function debugFunction() {
+
+	console.log("------------------------------------");
+	// if any word is loaded
+	if(!word_a[0]){
+		document.getElementById("result").innerHTML = "Pleas, insert word.";
+		return;
+	}
+
 	var s = stack.pop();
-	var q = word[0];
+	var q = word_a[0];
 
 	console.log("Stack: " + s + " | Queue: " + q);
 	// correct word
 	if(s == "#" && q == "$"){
 		document.getElementById("result").innerHTML = "Correct word!";
 		stack.push("#");
+		word_a.push("$");
 		return;
 	}
 
 	// end of the stack or queue
-	console.log()
 	if(	!q || !s ){
+		console.log("one of them is empty");
 		document.getElementById("result").innerHTML = "Incorrect word!";
 		return;
 	}
 
-
-	console.log("Stack: " + s + " | Queue: " + q);
 	var rule = array[s][q];
 
 	// if rule == POP , than shift from queue
 	if(rule == "POP"){
 		console.log("POP");
-		word.shift();
+		word_a.shift();
 		return;
 	}
 
 	if(rule == null){
+		console.log("its null");
 		document.getElementById("result").innerHTML = "Incorrect word!";
-		word = [];
+		word_a = [];
 		return;
 	}
 
@@ -141,5 +96,51 @@ function myFunction() {
 	for (var i = rule.length - 1; i >= 0; i--) {
 		console.log(rule[i]);
 		stack.push(rule[i]);
+	}
+}	 
+
+function checkFunction() {
+
+	// if any word is loaded
+	if(!word_a[0]){
+		document.getElementById("result").innerHTML = "Pleas, insert word.";
+		return;
+	}
+
+	while(true){
+		var s = stack.pop();
+		var q = word_a[0];
+		
+		// correct word
+		if(s == "#" && q == "$"){
+			document.getElementById("result").innerHTML = "Correct word!";
+			stack.push("#");
+			word_a.push("$");
+			return;
+		}
+
+		// end of the stack or queue
+		if(	!q || !s ){
+			document.getElementById("result").innerHTML = "Incorrect word!";
+			return;
+		}
+
+		var rule = array[s][q];
+
+		// if rule == POP , than shift from queue
+		if(rule == "POP"){
+			word_a.shift();
+		} else if(rule == null){
+			console.log("its null");
+			document.getElementById("result").innerHTML = "Incorrect word!";
+			word_a = [];
+			return;
+		} else if(rule == "ε"){
+
+		} else{
+			for (var i = rule.length - 1; i >= 0; i--) {
+				stack.push(rule[i]);
+			}
+		}
 	}
 }	 
