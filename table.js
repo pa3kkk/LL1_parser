@@ -175,7 +175,7 @@ var array = {
 			"/": ["ε"],
 			"?": ["ε"],
 			"@": null,
-			":": null,
+			":": ["ε"],
 			"+": null,
 			".": [".", "hostname"],
 			"lett": null,
