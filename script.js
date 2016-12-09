@@ -43,6 +43,47 @@ function loadFunction(){
 	word_a.push("$");
 }
 
+function loadFixFunction(){
+	var word = document.getElementById("word").value;
+	document.getElementById("result").innerHTML = "";
+
+	word_a = [];
+	stack = ["#", "url"];
+
+	while(word.length > 0 ){
+		
+		if(word.startsWith("http://")){
+			word = word.substring("http://".length);
+			word_a.push("http://");
+		} else if(word.startsWith("ftp://")){
+			word = word.substring("ftp://".length);
+			word_a.push("ftp://");
+		} else if(word.startsWith("telnet://")){
+			word = word.substring("telnet://".length);
+			word_a.push("telnet://");
+		} else if(word.startsWith("mailto::")){
+			word = word.substring("mailto::".length);
+			word_a.push("mailto::");
+		} else if(word[0].match(/[0-9]/)){
+			word = word.substring(1);
+			word_a.push("num");
+		} else if(word[0].match(/[a-z]/i)){
+			word = word.substring(1);
+			word_a.push("lett");
+		} else if(word[0].match(/\?|\@|\:|\+|\.|\//)){
+			word_a.push(word[0]);
+			word = word.substring(1);
+		} else{
+			document.getElementById("result").innerHTML = "Word is fixed!";
+			word = word.substring(1);
+		}
+
+		console.log(word_a[word_a.length -1]);
+	}
+
+	word_a.push("$");
+}
+
 
 function debugFunction() {
 
